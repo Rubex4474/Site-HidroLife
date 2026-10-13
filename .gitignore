@@ -1,0 +1,10 @@
+# Material bruto do cliente e anotações internas (não publicar)
+_materiais-cliente/
+PENDENCIAS.md
+assets/img/_candidatos/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+assets/img/provisorias/ofuro.jpg

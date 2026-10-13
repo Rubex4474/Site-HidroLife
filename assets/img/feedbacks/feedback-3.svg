@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 1080" width="540" height="1080">
+<rect width="100%" height="100%" fill="#efeae2"/>
+<rect width="100%" height="118" fill="#008069"/>
+<circle cx="58" cy="76" r="26" fill="#cfe9e3"/>
+<rect x="98" y="58" width="150" height="14" rx="7" fill="#e6f4f1"/>
+<rect x="98" y="82" width="90" height="10" rx="5" fill="#9fd3c8"/>
+<rect x="22" y="150" width="357" height="70" rx="14" fill="#ffffff"/>
+<rect x="38" y="166" width="308" height="9" rx="4.5" fill="#d5d9dc"/>
+<rect x="38" y="188" width="285" height="9" rx="4.5" fill="#d5d9dc"/>
+<rect x="333" y="205" width="30" height="6" rx="3" fill="#cfd3d6"/>
+<rect x="137" y="239" width="381" height="114" rx="14" fill="#d9fdd3"/>
+<rect x="153" y="255" width="340" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="153" y="277" width="329" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="153" y="299" width="329" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="153" y="321" width="315" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="472" y="338" width="30" height="6" rx="3" fill="#9bb894"/>
+<rect x="119" y="377" width="399" height="92" rx="14" fill="#d9fdd3"/>
+<rect x="135" y="393" width="350" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="135" y="415" width="361" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="135" y="437" width="345" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="472" y="454" width="30" height="6" rx="3" fill="#9bb894"/>
+<rect x="22" y="493" width="260" height="70" rx="14" fill="#ffffff"/>
+<rect x="38" y="509" width="211" height="9" rx="4.5" fill="#d5d9dc"/>
+<rect x="38" y="531" width="172" height="9" rx="4.5" fill="#d5d9dc"/>
+<rect x="236" y="548" width="30" height="6" rx="3" fill="#cfd3d6"/>
+<rect x="130" y="584" width="388" height="92" rx="14" fill="#d9fdd3"/>
+<rect x="146" y="600" width="337" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="146" y="622" width="349" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="146" y="644" width="305" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="472" y="661" width="30" height="6" rx="3" fill="#9bb894"/>
+<rect x="237" y="688" width="281" height="48" rx="14" fill="#d9fdd3"/>
+<rect x="253" y="704" width="243" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="472" y="721" width="30" height="6" rx="3" fill="#9bb894"/>
+<rect x="166" y="755" width="352" height="92" rx="14" fill="#d9fdd3"/>
+<rect x="182" y="771" width="301" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="182" y="793" width="312" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="182" y="815" width="293" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="472" y="832" width="30" height="6" rx="3" fill="#9bb894"/>
+<rect x="249" y="869" width="269" height="70" rx="14" fill="#d9fdd3"/>
+<rect x="265" y="885" width="227" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="265" y="907" width="207" height="9" rx="4.5" fill="#a8c9a2"/>
+<rect x="472" y="924" width="30" height="6" rx="3" fill="#9bb894"/>
+<rect x="16" y="1006" width="440" height="56" rx="28" fill="#ffffff"/>
+<circle cx="496" cy="1034" r="28" fill="#00a884"/>
+<rect x="140" y="470" width="260" height="70" rx="35" fill="#04213F" fill-opacity=".86"/>
+<text x="270" y="503" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff">EXEMPLO</text>
+<text x="270" y="528" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#9DB6C6">print de feedback 3</text>
+</svg>
