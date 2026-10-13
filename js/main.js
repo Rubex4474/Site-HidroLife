@@ -130,12 +130,8 @@
     const pad = parseFloat(getComputedStyle(track).paddingLeft);
     const view = carousel.pinned ? window.innerWidth : rail.clientWidth;
     let x = align === "start" ? el.offsetLeft - pad : el.offsetLeft + el.offsetWidth / 2 - view / 2;
-    if (carousel.pinned) {
-      const st = carousel.tween.scrollTrigger;
-      const dist = track.scrollWidth - window.innerWidth;
-      x = Math.min(Math.max(x, 0), dist);
-      const y = st.start + (x / dist) * (st.end - st.start);
-      carousel.lenis ? carousel.lenis.scrollTo(y, { duration: 1.2 }) : window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+    if (carousel.pinned && carousel.toIndex) {
+      carousel.toIndex(items.indexOf(el));
     } else {
       rail.scrollTo({ left: x, behavior: reduced ? "auto" : "smooth" });
       const top = products.getBoundingClientRect().top;
@@ -277,7 +273,6 @@
   const dive = $(".dive");
   if (!window.gsap || !window.ScrollTrigger) {
     // CDN falhou: mostra tudo no estado final
-    dive.style.setProperty("--lvl", 0);
     $(".dive__after").style.opacity = 1;
     return;
   }
@@ -303,16 +298,6 @@
      Vale mesmo com "reduzir movimento": o trilho só anda quando a pessoa rola, não há animação automática. */
   gsap.matchMedia().add("all", () => {
     const dist = () => track.scrollWidth - window.innerWidth;
-    // Pontos de encaixe: o progresso em que cada capítulo/modelo fica centralizado
-    let snapPoints = [0, 1];
-    const computeSnaps = () => {
-      const d = dist();
-      if (d <= 0) return;
-      snapPoints = [...new Set(items.map((el) => {
-        const x = Math.min(Math.max(el.offsetLeft + el.offsetWidth / 2 - window.innerWidth / 2, 0), d);
-        return +(x / d).toFixed(4);
-      }))].sort((a, b) => a - b);
-    };
     products.classList.add("is-pinned");
     $(".chapter__hint b").textContent = "Role para explorar";
     rail.scrollLeft = 0;
@@ -323,20 +308,85 @@
       scrollTrigger: {
         trigger: products, start: "top top", end: () => `+=${dist()}`,
         pin: true, scrub: 0.7, invalidateOnRefresh: true, anticipatePin: 1,
-        // ao parar de rolar, encaixa no modelo mais próximo (nunca fica card cortado no meio)
-        snap: {
-          snapTo: (v) => snapPoints.reduce((a, b) => (Math.abs(b - v) < Math.abs(a - v) ? b : a)),
-          duration: { min: 0.25, max: 0.7 }, delay: 0.08, ease: "power2.inOut", inertia: false,
-        },
-        onRefresh: () => { computeSnaps(); updateCarousel(); },
+        onRefresh: updateCarousel,
+        onToggle: (self) => { if (carousel.toIndex) (self.isActive ? enterPin() : exitPin()); },
       },
     });
-    computeSnaps();
+
+    /* Um modelo por gesto: dentro da seção, cada deslizada do dedo (ou giro da roda do mouse)
+       avança exatamente 1 item e pausa nele — mesmo um arrasto rápido não passa vários de uma vez.
+       Depois do último (ou antes do primeiro), o próximo gesto libera a página. */
+    const st = () => carousel.tween.scrollTrigger;
+    const yForIndex = (i) => {
+      const el = items[i], d = dist();
+      let x = i === 0 ? 0 : el.offsetLeft + el.offsetWidth / 2 - window.innerWidth / 2;
+      x = Math.min(Math.max(x, 0), d);
+      // sempre 1px para dentro da seção: na borda exata o ScrollTrigger considera "fora" e a trava piscava
+      return Math.min(Math.max(st().start + (x / d) * (st().end - st().start), st().start + 2), st().end - 2);
+    };
+    const nearestIndex = () => {
+      let best = 0;
+      items.forEach((_, i) => { if (Math.abs(yForIndex(i) - window.scrollY) < Math.abs(yForIndex(best) - window.scrollY)) best = i; });
+      return best;
+    };
+    let pos = 0, busy = false, locked = false;
+    const scrollToY = (y, dur, done) => {
+      if (carousel.lenis) carousel.lenis.scrollTo(y, { duration: dur, force: true, lock: true, onComplete: done });
+      else {
+        const o = { y: window.scrollY };
+        gsap.to(o, { y, duration: dur, ease: "power2.inOut", overwrite: true, onUpdate: () => window.scrollTo(0, o.y), onComplete: done });
+      }
+    };
+    const DUR = reduced ? 0.35 : 0.75;
+    const toIndex = (i) => {
+      pos = Math.min(Math.max(i, 0), items.length - 1);
+      busy = true;
+      scrollToY(yForIndex(pos), DUR, () => gsap.delayedCall(0.35, () => { busy = false; }));
+    };
+    const leave = (dir) => {
+      busy = true;
+      exitPin();
+      const y = dir > 0 ? st().end + window.innerHeight * 0.6 : st().start - window.innerHeight * 0.6;
+      scrollToY(Math.max(0, y), 0.9, () => { busy = false; });
+    };
+    const go = (dir) => {
+      if (busy) return;
+      const next = pos + dir;
+      if (next < 0 || next >= items.length) leave(dir);
+      else toIndex(next);
+    };
+    const intent = ScrollTrigger.observe({
+      type: "wheel,touch", wheelSpeed: -1, tolerance: 14, preventDefault: true,
+      onUp: () => go(1), onDown: () => go(-1),
+    });
+    intent.disable();
+    function enterPin() {
+      if (locked) return;
+      locked = true;
+      if (!busy) pos = nearestIndex();
+      intent.enable();
+      if (carousel.lenis) carousel.lenis.stop();
+    }
+    function exitPin() {
+      if (!locked) return;
+      locked = false;
+      intent.disable();
+      if (carousel.lenis) carousel.lenis.start();
+    }
+    // Segura a posição enquanto a seção está travada (corta o "embalo" de um arrasto forte no celular)
+    const hold = () => { if (locked && !busy) window.scrollTo(0, yForIndex(pos)); };
+    window.addEventListener("scroll", hold, { passive: true });
+    carousel.toIndex = toIndex;
+    if (carousel.tween.scrollTrigger.isActive) enterPin();
     updateCarousel();
     // Ao sair do desktop: volta ao trilho arrastável
     return () => {
       products.classList.remove("is-pinned");
       $(".chapter__hint b").textContent = "Arraste para o lado";
+      exitPin();
+      window.removeEventListener("scroll", hold);
+      intent.kill();
+      carousel.toIndex = null;
       carousel.pinned = false;
       carousel.tween = null;
       items.forEach((s) => { s.style.transform = ""; s.style.opacity = ""; });
@@ -370,7 +420,6 @@
   });
 
   if (reduced) {
-    dive.style.setProperty("--lvl", 0);
     return;
   }
 
@@ -409,12 +458,17 @@
 
 
   /* MERGULHO — seção fixa: a água sobe e engole a palavra */
-  dive.classList.add("is-rising");
+  const water = $(".dive__water");
+  const waterInner = $(".dive__inner");
+  const surface = $(".dive__surface");
+  const stage = $(".dive__stage");
   const diveTl = gsap.timeline({
-    scrollTrigger: { trigger: dive, start: "top top", end: "bottom bottom", scrub: 0.8 },
+    scrollTrigger: { trigger: dive, start: "top top", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true },
   });
   diveTl
-    .fromTo(dive, { "--lvl": 100 }, { "--lvl": 0, ease: "power1.inOut", duration: 0.68 })
+    .fromTo(water, { yPercent: 100 }, { yPercent: 0, ease: "power1.inOut", duration: 0.68 })
+    .fromTo(waterInner, { yPercent: -100 }, { yPercent: 0, ease: "power1.inOut", duration: 0.68 }, 0)
+    .fromTo(surface, { y: () => stage.clientHeight - 69 }, { y: -69, ease: "power1.inOut", duration: 0.68 }, 0)
     .fromTo(".dive__dry .dive__word", { y: 0 }, { y: -30, ease: "none", duration: 0.68 }, 0)
     .fromTo(".dive__wet .dive__word", { y: 0 }, { y: -30, ease: "none", duration: 0.68 }, 0)
     .to([".dive__wet .dive__word", ".dive__wet .dive__kicker"], { y: "-=60", opacity: 0.18, duration: 0.2, ease: "power2.in" }, 0.72)

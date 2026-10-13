@@ -368,7 +368,7 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
 /* =========================================================
    MERGULHO — a água sobe
    ========================================================= */
-.dive { position: relative; height: 220vh; background: var(--foam); --lvl: 100; }
+.dive { position: relative; height: 220vh; background: var(--foam); }
 .dive__stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 .dive__dry,
 .dive__wet {
@@ -379,9 +379,11 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
 .dive__word {
   font: italic 400 clamp(6rem, 24vw, 22rem)/.85 var(--f-serif); letter-spacing: -0.04em; color: var(--abyss);
 }
-.dive__water {
-  position: absolute; inset: 0;
-  clip-path: inset(calc(var(--lvl) * 1%) 0 0 0);
+/* A água sobe só com transform (GPU): a "janela" desce/sobe e o conteúdo é contra-deslocado,
+   então nada precisa ser redesenhado a cada quadro (antes era clip-path, pesado no celular) */
+.dive__water { position: absolute; inset: 0; overflow: hidden; will-change: transform; }
+.dive__inner {
+  position: absolute; inset: 0; will-change: transform;
   background: linear-gradient(180deg, #0AA6B0 0%, #03789C 28%, #064A7E 58%, var(--abyss) 100%);
 }
 .dive__photo {
@@ -394,11 +396,9 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
 .dive__wet .dive__kicker { color: rgba(234, 244, 247, .7); }
 .dive__wet .dive__word { color: var(--on-dark); text-shadow: 0 0 60px rgba(0, 184, 240, .35); }
 .dive__surface {
-  position: absolute; left: 0; width: 100%; height: 70px; pointer-events: none;
-  top: calc(var(--lvl) * 1% - 69px);
-  visibility: hidden;
+  position: absolute; left: 0; top: 0; width: 100%; height: 70px; pointer-events: none;
+  transform: translateY(-69px); will-change: transform;
 }
-.dive.is-rising .dive__surface { visibility: visible; }
 .dive__surface path { fill: #0AA6B0; }
 .dive__surface .w1 { opacity: .55; animation: wave 6s linear infinite; }
 .dive__surface .w2 { animation: wave 9s linear infinite reverse; }
@@ -985,6 +985,20 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
 }
 
 /* =========================================================
+   DESEMPENHO NO CELULAR — tira o que custa caro para a GPU
+   ========================================================= */
+@media (max-width: 720px), (hover: none) and (pointer: coarse) {
+  .grain, .caustics, .bubbles, .steam { display: none; }
+  .dive__surface .w1, .dive__surface .w2 { animation: none; }
+  .dive__photo { mix-blend-mode: normal; opacity: .11; -webkit-mask-image: none; mask-image: none; }
+  .dive__wet .dive__word { text-shadow: none; }
+  .products__glow { filter: none; opacity: .7; }
+  .nav.is-scrolled { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(244, 242, 237, .97); }
+  .nav.is-dark.is-scrolled { background: rgba(4, 33, 63, .97); }
+  .temp { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255, 255, 255, .96); }
+}
+
+/* =========================================================
    MOVIMENTO REDUZIDO
    ========================================================= */
 @media (prefers-reduced-motion: reduce) {
@@ -998,6 +1012,9 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
     position: relative; clip-path: none; padding: clamp(7.5rem, 26vw, 10rem) 0 clamp(4.5rem, 13vw, 6rem);
     -webkit-mask-image: linear-gradient(#000 65%, transparent); mask-image: linear-gradient(#000 65%, transparent);
   }
+  .dive__water, .dive__inner { transform: none !important; }
+  .dive__inner { position: relative; inset: auto; background: none; }
+  .dive__water { background: linear-gradient(180deg, #0AA6B0 0%, #03789C 28%, #064A7E 58%, var(--abyss) 100%); }
   .dive__wet { position: relative; inset: auto; }
   .dive__after { position: relative; inset: auto; margin: 0 auto; padding: 0 var(--gutter); justify-items: center; text-align: center; opacity: 1; }
   .js [data-reveal] { opacity: 1; }
