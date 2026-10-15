@@ -988,6 +988,7 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
   .products.is-pinned .slide { width: 80vw; height: 100%; max-height: 33rem; grid-template-rows: minmax(0, 42%) 1fr; }
   .products.is-pinned .slide__media { aspect-ratio: auto; }
   .products.is-pinned .slide__media--product { padding: .7rem; }
+  .products.is-pinned .badge { top: .6rem; left: .6rem; padding: .3rem .6rem; font-size: .66rem; }
   .products.is-pinned .slide__info { padding: 1rem 1.1rem 1.1rem; gap: .55rem; }
   .products.is-pinned .slide__name { font-size: 1.55rem; }
   .products.is-pinned .price b { font-size: 1.45rem; }
