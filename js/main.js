@@ -72,6 +72,10 @@
   const CAT_NAMES = { spas: "Spas", banheiras: "Banheiras" };
   const carousel = { pinned: false, tween: null, lenis: null, active: 0 };
 
+  // Contadores calculados a partir dos cards (adicionar/remover modelo não exige editar números)
+  $$("[data-count-cat]").forEach((el) => { el.textContent = slides.filter((sl) => sl.dataset.cat === el.dataset.countCat).length; });
+  $$("[data-count-total]").forEach((el) => { el.textContent = String(slides.length).padStart(2, "0"); });
+
   const movePill = () => {
     const btn = $(".cat-switch__btn.is-active");
     catPill.style.width = `${btn.offsetWidth}px`;

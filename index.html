@@ -184,8 +184,8 @@
           <h2 class="h2">Escolha o seu <em>refúgio</em>.</h2>
         </div>
         <div class="cat-switch" role="group" aria-label="Ir para a categoria">
-          <button type="button" class="cat-switch__btn is-active" data-go="spas" aria-pressed="true">Spas <small>4</small></button>
-          <button type="button" class="cat-switch__btn" data-go="banheiras" aria-pressed="false">Banheiras <small>3</small></button>
+          <button type="button" class="cat-switch__btn is-active" data-go="spas" aria-pressed="true">Spas <small data-count-cat="spas">5</small></button>
+          <button type="button" class="cat-switch__btn" data-go="banheiras" aria-pressed="false">Banheiras <small data-count-cat="banheiras">3</small></button>
           <span class="cat-switch__pill" aria-hidden="true"></span>
         </div>
       </div>
@@ -195,7 +195,7 @@
 
           <!-- Capítulo: SPAS -->
           <div class="chapter" data-cat="spas" data-chapter="spas">
-            <p class="chapter__count"><b>4</b> modelos</p>
+            <p class="chapter__count"><b data-count-cat="spas">5</b> modelos</p>
             <h3 class="chapter__title">Spas</h3>
             <p class="chapter__text">Para a área externa, a varanda ou o terraço. Água quente e hidromassagem para reunir quem você gosta.</p>
             <p class="chapter__hint" aria-hidden="true"><b>Arraste para o lado</b> <span>→</span></p>
@@ -260,9 +260,26 @@
             </div>
           </article>
 
+          <article class="slide" data-cat="spas">
+            <div class="slide__media slide__media--product">
+              <img src="assets/img/spas/spa-redondo-198.webp" alt="Spa redondo de 1,98 m visto de cima, com assentos anatômicos e jatos" loading="lazy" width="820" height="820" />
+            </div>
+            <div class="slide__info">
+              <p class="slide__cat">Spa · 05</p>
+              <h3 class="slide__name">Spa Redondo</h3>
+              <ul class="chips">
+                <li><svg class="ico" aria-hidden="true"><use href="#i-ruler"/></svg>Ø 1,98 m</li>
+                <li><svg class="ico" aria-hidden="true"><use href="#i-jet"/></svg>5 jatos</li>
+                <li><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg>Motor 1 cv</li>
+              </ul>
+              <p class="slide__text">Acompanha 2 arejadores, 2 sucções, ralo de fundo e bica de entrada de água.</p>
+              <a class="btn btn--water" data-wa="Olá, HidroLife! Quero um orçamento do Spa Redondo 1,98 m." href="https://wa.me/5548999539186" target="_blank" rel="noopener">Orçamento deste modelo</a>
+            </div>
+          </article>
+
           <!-- Capítulo: BANHEIRAS -->
           <div class="chapter" data-cat="banheiras" data-chapter="banheiras">
-            <p class="chapter__count"><b>3</b> modelos</p>
+            <p class="chapter__count"><b data-count-cat="banheiras">3</b> modelos</p>
             <h3 class="chapter__title">Banheiras</h3>
             <p class="chapter__text">Hidromassagem dentro de casa: o banheiro vira o seu spa particular, todos os dias.</p>
           </div>
@@ -319,7 +336,7 @@
       </div>
 
       <div class="products__foot">
-        <p class="counter" aria-live="polite"><b data-counter>01</b><span>/ 07</span> <em data-catlabel>Spas</em></p>
+        <p class="counter" aria-live="polite"><b data-counter>01</b><span>/ <i data-count-total>08</i></span> <em data-catlabel>Spas</em></p>
         <div class="progress" aria-hidden="true"><i></i></div>
         <div class="rail-nav">
           <button type="button" class="rail-nav__btn" data-step="-1" aria-label="Modelo anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -644,6 +661,8 @@
     <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M4 5.5h16v10H9l-5 4v-14Z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M8 9.5h8M8 12.5h5"/></symbol>
     <symbol id="i-truck" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2.5 6.5h11v9h-11zM13.5 9.5h4l3 3.2v2.8h-7z"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></g></symbol>
     <symbol id="i-tool" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M14.5 5.5a4 4 0 0 0 4.9 4.9l-9 9a2.1 2.1 0 0 1-3-3l9-9a4 4 0 0 1-1.9-1.9ZM15 4l2 2"/></symbol>
+    <symbol id="i-jet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="12" r="3.2"/><path d="M13 12h8M13 8.5l6.5-2.5M13 15.5l6.5 2.5"/></g></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"/><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M8 12.5c1.3-1 2.7-1 4 0s2.7 1 4 0"/></symbol>
     <symbol id="i-flame" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" d="M12 3c.5 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 1.5 1 2.5 2 3 0-3 .5-6 1-8.5Z"/></symbol>
     <symbol id="i-light" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></symbol>
