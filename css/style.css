@@ -45,6 +45,8 @@
 *::before,
 *::after { box-sizing: border-box; }
 
+/* toque duplo rápido em botões/setas não dá zoom (o zoom de pinça continua funcionando) */
+a, button, label, summary, input, .rail, .shots, .lightbox { touch-action: manipulation; }
 html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
 /* clip (e não hidden) para não quebrar o position: sticky do mergulho */
 main, footer { overflow-x: clip; }

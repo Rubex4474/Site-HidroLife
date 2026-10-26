@@ -145,7 +145,9 @@
     }
   };
   const step = (dir) => {
-    const i = Math.min(Math.max(carousel.active + dir, 0), items.length - 1);
+    // no modo fixo usa o destino atual (não onde a animação está), assim cliques rápidos avançam 1 por clique
+    const from = carousel.pinned && carousel.getPos ? carousel.getPos() : carousel.active;
+    const i = Math.min(Math.max(from + dir, 0), items.length - 1);
     goToItem(items[i], i === 0 ? "start" : "center");
   };
   $$("[data-go]").forEach((el) => el.addEventListener("click", (e) => {
@@ -391,6 +393,7 @@
     const hold = () => { if (locked && !busy) window.scrollTo(0, yForIndex(pos)); };
     window.addEventListener("scroll", hold, { passive: true });
     carousel.toIndex = toIndex;
+    carousel.getPos = () => pos;
     if (carousel.tween.scrollTrigger.isActive) enterPin();
     updateCarousel();
     // Ao sair do desktop: volta ao trilho arrastável
@@ -401,6 +404,7 @@
       window.removeEventListener("scroll", hold);
       intent.kill();
       carousel.toIndex = null;
+      carousel.getPos = null;
       carousel.pinned = false;
       carousel.tween = null;
       items.forEach((s) => { s.style.transform = ""; s.style.opacity = ""; });
