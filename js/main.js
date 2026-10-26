@@ -43,14 +43,29 @@
   $$("a", menu).forEach((a) => a.addEventListener("click", () => setMenu(false)));
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) setMenu(false); });
 
+  /* ---------- Sem zoom no celular ----------
+     Bloqueia pinça (iOS) e toque duplo. O 2º toque rápido continua valendo como clique normal. */
+  ["gesturestart", "gesturechange", "gestureend"].forEach((ev) => document.addEventListener(ev, (e) => e.preventDefault(), { passive: false }));
+  document.addEventListener("touchmove", (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  let lastTouchEnd = 0;
+  document.addEventListener("touchend", (e) => {
+    const now = Date.now();
+    if (now - lastTouchEnd < 350 && e.changedTouches.length === 1) {
+      e.preventDefault();
+      const el = e.target.closest("a, button, label, summary");
+      const field = e.target.closest("input, textarea");
+      if (field) field.focus();
+      else if (el) el.click();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+
   /* ---------- Logo: volta ao início do site ----------
      (o #topo é o próprio cabeçalho fixo, então o navegador não rolaria sozinho) */
   $$("[data-top]").forEach((a) => a.addEventListener("click", (e) => {
     e.preventDefault();
     if (!menu.hidden) setMenu(false);
-    const lenis = typeof carousel !== "undefined" && carousel.lenis;
-    if (lenis) lenis.scrollTo(0, { duration: 1.6 });
-    else window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+    carousel.jumpTo(0);
     history.replaceState(null, "", location.pathname + location.search);
   }));
 
@@ -70,7 +85,23 @@
   const prevBtn = $('[data-step="-1"]');
   const nextBtn = $('[data-step="1"]');
   const CAT_NAMES = { spas: "Spas", banheiras: "Banheiras" };
-  const carousel = { pinned: false, tween: null, lenis: null, active: 0 };
+  const carousel = { pinned: false, tween: null, lenis: null, active: 0, bypass: false, release: null };
+  // Rolagem "de passagem" (logo, menu): atravessa a seção dos spas sem a trava do carrossel segurar no meio
+  carousel.jumpTo = (target, offset = 0) => {
+    carousel.bypass = true;
+    if (carousel.release) carousel.release();
+    let finished = false;
+    const done = () => { if (finished) return; finished = true; carousel.bypass = false; };
+    if (carousel.lenis) {
+      carousel.lenis.start();
+      carousel.lenis.scrollTo(target, { offset, duration: 1.4, force: true, onComplete: done });
+      setTimeout(done, 2200);
+    } else {
+      const y = typeof target === "number" ? target : target.getBoundingClientRect().top + window.scrollY + offset;
+      window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+      setTimeout(done, 1500);
+    }
+  };
 
   // Contadores calculados a partir dos cards (adicionar/remover modelo não exige editar números)
   $$("[data-count-cat]").forEach((el) => { el.textContent = slides.filter((sl) => sl.dataset.cat === el.dataset.countCat).length; });
@@ -377,7 +408,7 @@
     });
     intent.disable();
     function enterPin() {
-      if (locked) return;
+      if (locked || carousel.bypass) return;
       locked = true;
       if (!busy) pos = nearestIndex();
       intent.enable();
@@ -390,10 +421,11 @@
       if (carousel.lenis) carousel.lenis.start();
     }
     // Segura a posição enquanto a seção está travada (corta o "embalo" de um arrasto forte no celular)
-    const hold = () => { if (locked && !busy) window.scrollTo(0, yForIndex(pos)); };
+    const hold = () => { if (locked && !busy && !carousel.bypass) window.scrollTo(0, yForIndex(pos)); };
     window.addEventListener("scroll", hold, { passive: true });
     carousel.toIndex = toIndex;
     carousel.getPos = () => pos;
+    carousel.release = exitPin;
     if (carousel.tween.scrollTrigger.isActive) enterPin();
     updateCarousel();
     // Ao sair do desktop: volta ao trilho arrastável
@@ -405,6 +437,7 @@
       intent.kill();
       carousel.toIndex = null;
       carousel.getPos = null;
+      carousel.release = null;
       carousel.pinned = false;
       carousel.tween = null;
       items.forEach((s) => { s.style.transform = ""; s.style.opacity = ""; });
@@ -454,7 +487,7 @@
       const target = $(id);
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target, { offset: -70 });
+      carousel.jumpTo(target, -70);
     }));
   }
 
