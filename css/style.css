@@ -551,6 +551,10 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
 }
 .slide.is-active .slide__media--product img { transform: scale(.98) rotate(-4deg); }
 .slide__media--product .badge { z-index: 2; }
+/* fotos largas (banheira de lado): ocupam a largura, sem forçar formato quadrado */
+.slide__media--wide { padding-inline: clamp(1.4rem, 4vw, 3rem); }
+.slide__media.slide__media--wide img { aspect-ratio: auto; width: 100%; height: auto; max-height: 100%; }
+.slide.is-active .slide__media--wide img { transform: scale(.98) rotate(-2deg); }
 .slide__info { display: flex; flex-direction: column; justify-content: center; gap: 1rem; padding: clamp(1.4rem, 3vw, 2.6rem); min-width: 0; }
 .slide__cat { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--aqua); font-weight: 600; }
 .slide__name { font: 700 clamp(1.9rem, 3.3vw, 3rem)/1 var(--f-display); letter-spacing: -0.035em; }
