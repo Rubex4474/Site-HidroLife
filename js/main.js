@@ -354,7 +354,7 @@
       onUpdate: updateCarousel,
       scrollTrigger: {
         trigger: products, start: "top top", end: () => `+=${dist()}`,
-        pin: true, scrub: 0.7, invalidateOnRefresh: true, anticipatePin: 1,
+        pin: true, scrub: true, invalidateOnRefresh: true, anticipatePin: 1, // o trilho segue a rolagem na hora (a suavidade vem da curva acima)
         onRefresh: updateCarousel,
         onToggle: (self) => { if (carousel.toIndex) (self.isActive ? enterPin() : exitPin()); },
       },
@@ -376,19 +376,28 @@
       items.forEach((_, i) => { if (Math.abs(yForIndex(i) - window.scrollY) < Math.abs(yForIndex(best) - window.scrollY)) best = i; });
       return best;
     };
-    let pos = 0, busy = false, locked = false;
+    let pos = 0, busy = false, locked = false, lastInput = 0, pressed = false;
+    // Libera o próximo gesto só quando: o dedo saiu da tela (1 modelo por arrasto)
+    // e a roda do mouse parou de girar (o "embalo" não pula modelos)
+    const releaseWhenQuiet = () => {
+      if (!pressed && performance.now() - lastInput > 240) busy = false;
+      else gsap.delayedCall(0.05, releaseWhenQuiet);
+    };
+    // Curva "com óleo": acelera e desacelera suave (ease-in-out), sem o tranco do início da curva padrão
+    const glide = (t) => -(Math.cos(Math.PI * t) - 1) / 2; // ease-in-out senoidal: começa rápido o bastante e sem tranco
     const scrollToY = (y, dur, done) => {
-      if (carousel.lenis) carousel.lenis.scrollTo(y, { duration: dur, force: true, lock: true, onComplete: done });
+      if (carousel.lenis) carousel.lenis.scrollTo(y, { duration: dur, easing: glide, force: true, lock: true, onComplete: done });
       else {
         const o = { y: window.scrollY };
-        gsap.to(o, { y, duration: dur, ease: "power2.inOut", overwrite: true, onUpdate: () => window.scrollTo(0, o.y), onComplete: done });
+        gsap.to(o, { y, duration: dur, ease: "sine.inOut", overwrite: true, onUpdate: () => window.scrollTo(0, o.y), onComplete: done });
       }
     };
-    const DUR = reduced ? 0.35 : 0.75;
+    const DUR = reduced ? 0.4 : 0.72;
     const toIndex = (i) => {
       pos = Math.min(Math.max(i, 0), items.length - 1);
       busy = true;
-      scrollToY(yForIndex(pos), DUR, () => gsap.delayedCall(0.35, () => { busy = false; }));
+      scrollToY(yForIndex(pos), DUR, () => {});
+      gsap.delayedCall(DUR, releaseWhenQuiet); // não depende do fim da animação (que pode ser interrompida)
     };
     const leave = (dir) => {
       busy = true;
@@ -404,6 +413,9 @@
     };
     const intent = ScrollTrigger.observe({
       type: "wheel,touch", wheelSpeed: -1, tolerance: 14, preventDefault: true,
+      onChange: () => { lastInput = performance.now(); },
+      onPress: () => { pressed = true; lastInput = performance.now(); },
+      onRelease: () => { pressed = false; lastInput = performance.now(); },
       onUp: () => go(1), onDown: () => go(-1),
     });
     intent.disable();
