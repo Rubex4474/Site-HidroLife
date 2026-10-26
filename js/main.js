@@ -247,6 +247,16 @@
     if (typeof carousel !== "undefined" && carousel.lenis) carousel.lenis.start();
   });
 
+  /* ---------- Vídeo do topo: garante o play (alguns celulares bloqueiam autoplay até o usuário tocar) ---------- */
+  const heroVideo = $(".tub-frame__media");
+  if (heroVideo) {
+    const tryPlay = () => heroVideo.play().catch(() => {});
+    tryPlay();
+    ["touchstart", "click", "scroll"].forEach((ev) => window.addEventListener(ev, tryPlay, { once: true, passive: true }));
+    // pausa quando sai da tela (economiza bateria/CPU no celular)
+    new IntersectionObserver(([e]) => (e.isIntersecting ? tryPlay() : heroVideo.pause())).observe(heroVideo);
+  }
+
   /* ---------- Formulário → WhatsApp ---------- */
   const form = $("#form-orcamento");
   form.addEventListener("submit", (e) => {
@@ -445,7 +455,7 @@
   }
 
   /* HERO — parallax leve na foto */
-  gsap.to(".tub-frame img", {
+  gsap.to(".tub-frame__media", {
     yPercent: -10, ease: "none",
     scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
   });
