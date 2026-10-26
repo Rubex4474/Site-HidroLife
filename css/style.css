@@ -189,7 +189,7 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
    ========================================================= */
 .hero {
   position: relative;
-  display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: clamp(2rem, 5vw, 5rem);
+  display: grid; grid-template-columns: .95fr 1.05fr; align-items: center; gap: clamp(2rem, 4vw, 4rem);
   min-height: 100svh; padding: 7.5rem var(--gutter) 4rem;
   background:
     radial-gradient(60rem 40rem at 85% 20%, rgba(0, 184, 240, .12), transparent 60%),
@@ -215,14 +215,15 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
 .hero__facts strong { font: 700 1.5rem/1.1 var(--f-display); letter-spacing: -0.02em; color: var(--abyss); }
 .hero__facts span { font-size: .85rem; color: var(--muted); }
 
-.hero__visual { position: relative; height: min(80svh, 46rem); }
+/* quadro mais horizontal para o vídeo 16:9 não ficar cortado demais */
+.hero__visual { position: relative; width: 100%; aspect-ratio: 5 / 4; max-height: min(78svh, 44rem); justify-self: end; }
 .tub-frame {
   position: absolute; inset: 0; margin: 0; overflow: hidden;
   /* formato de "cuba": topo reto arredondado, fundo em curva — eco da banheira da logo */
   border-radius: 34px 34px 48% 48% / 34px 34px 26% 26%;
   box-shadow: 0 40px 80px -40px rgba(4, 33, 63, .55);
 }
-.tub-frame img, .tub-frame__media { display: block; width: 100%; height: 115%; object-fit: cover; object-position: 50% 60%; }
+.tub-frame img, .tub-frame__media { display: block; width: 100%; height: 108%; object-fit: cover; object-position: 50% 60%; }
 .tub-frame__media { object-position: 45% 85%; }
 .tub-frame .caustics { mix-blend-mode: soft-light; opacity: .55; }
 
@@ -952,7 +953,7 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
   .nav__links { display: none; }
   .nav__cta { margin-left: auto; }
   .hero { grid-template-columns: 1fr; padding-top: 7rem; }
-  .hero__visual { height: 60svh; max-height: 36rem; }
+  .hero__visual { height: auto; aspect-ratio: 16 / 11; max-height: none; justify-self: stretch; }
   .temp { left: 1rem; }
   .addons { grid-template-columns: 1fr; }
   .why { grid-template-columns: 1fr; }
@@ -1002,7 +1003,7 @@ em { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-s
   .hero { padding-top: 6rem; gap: 2.5rem; }
   .hero__facts li { padding-right: 1rem; margin-right: 1rem; }
   .hero__facts strong { font-size: 1.25rem; }
-  .hero__visual { height: 26rem; }
+  .hero__visual { height: auto; aspect-ratio: 4 / 3.3; }
   .temp { left: .6rem; bottom: 1rem; padding: .6rem .9rem .6rem .6rem; }
   .seal__badge { width: 3.6rem; height: 3.6rem; }
   .seal__check { width: 1.4rem; height: 1.4rem; }
